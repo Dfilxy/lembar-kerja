@@ -1,0 +1,13 @@
+{
+    "framework": null,
+    "buildCommand": "node -e \"const fs = require('node:fs'); fs.mkdirSync('vercel-static', {recursive: true}); for (const file of ['form.css', 'peruri-logo.jpg']) fs.copyFileSync('public/' + file, 'vercel-static/' + file);\"",
+    "outputDirectory": "vercel-static",
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.7.4"
+        }
+    },
+    "rewrites": [
+        { "source": "/", "destination": "/api/index.php" }
+    ]
+}

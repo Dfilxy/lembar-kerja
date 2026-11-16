@@ -1,0 +1,7 @@
+Options -Indexes
+RewriteEngine On
+RewriteRule ^$ public/index.php [L]
+RewriteRule ^(form\.css|peruri-logo\.jpg)$ public/$1 [L]
+RewriteRule ^public/(index\.php|form\.css|peruri-logo\.jpg)$ - [L]
+RewriteRule ^ - [F]
+

@@ -1,0 +1,7 @@
+{
+    "name": "local/lembar-kerja-kalibrasi",
+    "require": {
+        "php": "^8.2",
+        "dompdf/dompdf": "3.1.6"
+    }
+}

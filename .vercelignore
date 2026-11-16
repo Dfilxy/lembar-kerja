@@ -1,0 +1,5 @@
+/vendor/
+/.vercel/
+/vercel-static/
+/.git/
+/Jalankan.bat
