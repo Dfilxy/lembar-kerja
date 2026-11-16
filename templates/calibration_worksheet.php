@@ -5,13 +5,16 @@
     <title>Lembar Kerja Kalibrasi - <?= escape($worksheet['certificate_number'] ?? '-') ?></title>
     <style>
         @page {
-            margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+            size: A4 portrait;
+            margin: 1.2cm 1.5cm 1.2cm 1.5cm;
         }
         body {
             font-family: 'Arial Narrow', Arial, Helvetica, sans-serif;
             font-size: 12px;
             color: #000000;
-            line-height: 1.3;
+            line-height: 1.25;
+            margin: 0;
+            padding: 0;
         }
         table, th, td {
             font-family: 'Arial Narrow', Arial, Helvetica, sans-serif;
@@ -23,7 +26,7 @@
         /* Main Title */
         .worksheet-heading {
             text-align: center;
-            margin: 6px 0 12px 0;
+            margin: 5px 0 10px 0;
         }
         .worksheet-heading h2 {
             margin: 0;
@@ -41,17 +44,24 @@
         /* Info 2-Col Section */
         .info-wrapper {
             width: 100%;
-            margin-bottom: 10px;
+            table-layout: fixed;
+            margin-bottom: 8px;
         }
         .info-wrapper > tbody > tr > td {
             vertical-align: top;
             border: none;
             padding: 0;
         }
+        .info-list {
+            width: 100%;
+            table-layout: fixed;
+        }
         .info-list td {
-            padding: 1.5px 3px;
+            padding: 1px 3px;
             font-size: 12px;
+            line-height: 1.2;
             vertical-align: top;
+            word-wrap: break-word;
         }
         .info-label {
             font-weight: bold;
@@ -68,31 +78,34 @@
             background-color: #cbd5e1;
             font-weight: bold;
             font-size: 12px;
-            padding: 4px 8px;
-            margin-bottom: 6px;
+            padding: 3.5px 8px;
+            margin-bottom: 5px;
             border: 1px solid #64748b;
         }
 
         /* Measurement Table */
         .measure-table {
             width: 100%;
+            table-layout: fixed;
             border: 1px solid #000000;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .measure-table th {
             border: 1px solid #000000;
-            padding: 5px 4px;
+            padding: 4px 4px;
             text-align: center;
             font-size: 12px;
+            line-height: 1.2;
             font-weight: bold;
             background-color: #f8fafc;
         }
         .measure-table td {
             border: 1px solid #000000;
-            padding: 3.5px 6px;
+            padding: 2.5px 6px;
             text-align: center;
             font-size: 12px;
-            height: 16px;
+            line-height: 1.2;
+            height: 15px;
         }
         .u95-cell {
             text-align: left !important;
@@ -103,38 +116,64 @@
         /* Notes Lined Box */
         .notes-table {
             width: 100%;
+            table-layout: fixed;
             border: 1px solid #000000;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         .notes-table td {
             border: 1px solid #000000;
-            height: 16px;
+            height: 15px;
             padding: 2px 6px;
             font-size: 12px;
+            line-height: 1.2;
+            word-wrap: break-word;
         }
 
         /* Signature Table */
         .sig-table {
             width: 100%;
+            table-layout: fixed;
             border: 1px solid #000000;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .sig-table tr {
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         .sig-table th, .sig-table td {
             border: 1px solid #000000;
-            padding: 4px 8px;
+            padding: 3.5px 8px;
             font-size: 12px;
+            line-height: 1.2;
         }
         .sig-table th {
             text-align: center;
             font-weight: bold;
             background-color: #f8fafc;
         }
+        .sig-table .sig-label {
+            width: 18%;
+            border-right: none;
+            padding-right: 2px;
+            white-space: nowrap;
+        }
+        .sig-table .sig-colon {
+            width: 2%;
+            border-left: none;
+            padding-left: 0;
+            padding-right: 6px;
+            text-align: right;
+        }
         .sig-box {
-            height: 70px;
+            height: 64px;
             text-align: center;
             vertical-align: middle;
         }
         .sig-img {
-            max-height: 64px;
+            max-height: 58px;
             max-width: 180px;
         }
     </style>
@@ -212,7 +251,7 @@
                     <tr>
                         <td class="info-label">Metode kalibrasi</td>
                         <td>:</td>
-                        <td><?= escape($worksheet['calibration_method'] ?? '') ?></td>
+                        <td><?= escape($worksheet['calibration_method'] ?? '-') ?></td>
                     </tr>
                     <tr>
                         <td class="info-label">Pemilik Alat</td>
@@ -320,11 +359,11 @@
                     $r = $rows[$i] ?? null;
                 ?>
                 <tr>
-                    <td><?= escape($r['scale'] ?? '') ?></td>
-                    <td><?= escape($r['m1'] ?? '') ?></td>
-                    <td><?= escape($r['m2'] ?? '') ?></td>
-                    <td><?= escape($r['m3'] ?? '') ?></td>
-                    <td><strong><?= escape($r['average'] ?? '') ?></strong></td>
+                    <td><?= ($r['scale'] ?? '') !== '' ? escape((string) $r['scale']) : '&nbsp;' ?></td>
+                    <td><?= ($r['m1'] ?? '') !== '' ? escape((string) $r['m1']) : '&nbsp;' ?></td>
+                    <td><?= ($r['m2'] ?? '') !== '' ? escape((string) $r['m2']) : '&nbsp;' ?></td>
+                    <td><?= ($r['m3'] ?? '') !== '' ? escape((string) $r['m3']) : '&nbsp;' ?></td>
+                    <td><strong><?= ($r['average'] ?? '') !== '' ? escape((string) $r['average']) : '&nbsp;' ?></strong></td>
                 </tr>
             <?php endfor; ?>
             <tr>
@@ -347,7 +386,7 @@
     <table class="notes-table">
         <?php for ($lineIdx = 0; $lineIdx < 5; $lineIdx++): ?>
             <tr>
-                <td><?= escape($noteLines[$lineIdx] ?? '') ?></td>
+                <td><?= isset($noteLines[$lineIdx]) && $noteLines[$lineIdx] !== '' ? escape($noteLines[$lineIdx]) : '&nbsp;' ?></td>
             </tr>
         <?php endfor; ?>
     </table>
@@ -356,24 +395,27 @@
     <table class="sig-table">
         <thead>
             <tr>
-                <th width="20%"></th>
+                <th colspan="2" width="20%"></th>
                 <th width="40%">Diperiksa</th>
                 <th width="40%">Dikalibrasi</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Tanggal <span style="float: right;">:</span></td>
+                <td class="sig-label">Tanggal</td>
+                <td class="sig-colon">:</td>
                 <td style="text-align: center;"><?= escape($worksheet['checked_date'] ?? ($worksheet['calibration_date_formatted'] ?? '')) ?></td>
                 <td style="text-align: center;"><?= escape($worksheet['calibrated_by_date'] ?? ($worksheet['calibration_date_formatted'] ?? '')) ?></td>
             </tr>
             <tr>
-                <td>Nama <span style="float: right;">:</span></td>
+                <td class="sig-label">Nama</td>
+                <td class="sig-colon">:</td>
                 <td style="text-align: center; font-weight: bold;"><?= escape($worksheet['checked_by_name'] ?? '') ?></td>
                 <td style="text-align: center; font-weight: bold;"><?= escape($worksheet['calibrated_by_name'] ?? '') ?></td>
             </tr>
             <tr>
-                <td style="vertical-align: middle;">Tanda tangan <span style="float: right;">:</span></td>
+                <td class="sig-label" style="vertical-align: middle;">Tanda tangan</td>
+                <td class="sig-colon" style="vertical-align: middle;">:</td>
                 <td class="sig-box">
                     <?php if (!empty($worksheet['checked_signature'])): ?>
                         <img src="<?= escape($worksheet['checked_signature']) ?>" class="sig-img" alt="TTD Pemeriksa" />

@@ -31,6 +31,7 @@
     .calibration-header .header-title {
         text-align: center;
         padding: 5px 8px;
+        font-size: 13px;
         line-height: 1.4;
     }
     .calibration-header .header-label,

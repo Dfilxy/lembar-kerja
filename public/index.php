@@ -131,15 +131,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ob_start();
     require dirname(__DIR__) . '/templates/calibration_worksheet.php';
     $html = ob_get_clean();
-    $fontDirectory = getenv('LKK_ARIAL_NARROW_DIR') ?: (
-        PHP_OS_FAMILY === 'Windows'
-            ? getenv('WINDIR') . '/Fonts'
-            : dirname(__DIR__) . '/templates/fonts'
-    );
+    $candidateFontDirs = array_filter([
+        getenv('LKK_ARIAL_NARROW_DIR') ?: '',
+        dirname(__DIR__) . '/templates/fonts',
+        PHP_OS_FAMILY === 'Windows' ? (getenv('WINDIR') ?: 'C:/Windows') . '/Fonts' : '',
+    ]);
+    $fontDirectory = '';
+    $regular = '';
+    $bold = '';
+    foreach ($candidateFontDirs as $dir) {
+        if (is_readable($dir . '/ARIALN.TTF') && is_readable($dir . '/ARIALNB.TTF')) {
+            $fontDirectory = $dir;
+            $regular = $dir . '/ARIALN.TTF';
+            $bold = $dir . '/ARIALNB.TTF';
+            break;
+        }
+    }
     $options = new Dompdf\Options();
-    $regular = $fontDirectory . '/ARIALN.TTF';
-    $bold = $fontDirectory . '/ARIALNB.TTF';
-    $hasArialNarrow = $fontDirectory !== '' && is_readable($regular) && is_readable($bold);
+    $options->setDefaultPaperSize('a4');
+    $options->setDefaultPaperOrientation('portrait');
+    $options->setDpi(96);
+    $hasArialNarrow = $fontDirectory !== '';
     if ($hasArialNarrow) {
         $fontCache = sys_get_temp_dir() . '/lkk-dompdf-fonts';
         if (!is_dir($fontCache)) {
