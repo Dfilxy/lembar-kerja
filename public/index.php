@@ -132,7 +132,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require dirname(__DIR__) . '/templates/calibration_worksheet.php';
     $html = ob_get_clean();
     $fontDirectory = getenv('LKK_ARIAL_NARROW_DIR') ?: (
-        PHP_OS_FAMILY === 'Windows' ? getenv('WINDIR') . '/Fonts' : ''
+        PHP_OS_FAMILY === 'Windows'
+            ? getenv('WINDIR') . '/Fonts'
+            : dirname(__DIR__) . '/templates/fonts'
     );
     $options = new Dompdf\Options();
     $regular = $fontDirectory . '/ARIALN.TTF';
