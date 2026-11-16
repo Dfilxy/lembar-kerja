@@ -131,7 +131,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ob_start();
     require dirname(__DIR__) . '/templates/calibration_worksheet.php';
     $html = ob_get_clean();
-    $pdf = new Dompdf\Dompdf();
+    $fontDirectory = getenv('LKK_ARIAL_NARROW_DIR') ?: (
+        PHP_OS_FAMILY === 'Windows' ? getenv('WINDIR') . '/Fonts' : ''
+    );
+    $options = new Dompdf\Options();
+    $regular = $fontDirectory . '/ARIALN.TTF';
+    $bold = $fontDirectory . '/ARIALNB.TTF';
+    $hasArialNarrow = $fontDirectory !== '' && is_readable($regular) && is_readable($bold);
+    if ($hasArialNarrow) {
+        $fontCache = sys_get_temp_dir() . '/lkk-dompdf-fonts';
+        if (!is_dir($fontCache)) {
+            mkdir($fontCache, 0700, true);
+        }
+        $options->setFontDir($fontCache);
+        $options->setFontCache($fontCache);
+        $options->setChroot([...$options->getChroot(), $fontDirectory]);
+    }
+    $pdf = new Dompdf\Dompdf($options);
+    if ($hasArialNarrow) {
+        $metrics = $pdf->getFontMetrics();
+        $metrics->registerFont(['family' => 'Arial Narrow', 'style' => 'normal', 'weight' => 'normal'], $regular);
+        $metrics->registerFont(['family' => 'Arial Narrow', 'style' => 'normal', 'weight' => 'bold'], $bold);
+    }
     $pdf->loadHtml($html, 'UTF-8');
     $pdf->setPaper('a4', 'portrait');
     $pdf->render();
